@@ -22,15 +22,17 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
         stopRecordButton.isEnabled = false
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        
+    // MARK: - recording state helper function
+    
+    func setRecordingState(startButton: Bool, stopButton: Bool, message: String){
+        startRecordButton.isEnabled = startButton
+        stopRecordButton.isEnabled = stopButton
+        recordLabel.text = message
     }
     
+    // MARK: - Record Audio
+    
     @IBAction func recordAudio(_ sender: UIButton) {
-        recordLabel.text = "Recording in Progress"
-        stopRecordButton.isEnabled = true
-        startRecordButton.isEnabled = false
-        
         let dirPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,.userDomainMask, true)[0] as String
         let recordingName = "recordedVoice.wav"
         let pathArray = [dirPath, recordingName]
@@ -44,19 +46,21 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
         audioRecorder.isMeteringEnabled = true
         audioRecorder.prepareToRecord()
         audioRecorder.record()
+        
+        setRecordingState(startButton: false, stopButton: true, message: "Recording in Progress")
     }
     
+    // MARK: - Stop Recording Audio
     
     @IBAction func stopRecording(_ sender: UIButton) {
-        
-        stopRecordButton.isEnabled = false
-        startRecordButton.isEnabled = true
-        recordLabel.text = "Tap To Record"
-        
         audioRecorder.stop()
         let audioSession = AVAudioSession.sharedInstance()
         try! audioSession.setActive(false)
+        
+        setRecordingState(startButton: true, stopButton: false, message: "Tap To Record")
     }
+    
+    // MARK: - Audio Recorder Delegate
     
     func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
         if flag {
@@ -65,9 +69,9 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
         } else  {
             print("Audio Recording Failed")
         }
-        
-        
     }
+    
+    //MARK: - Prepare for Segue
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "stopRecording" {

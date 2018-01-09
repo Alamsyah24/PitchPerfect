@@ -31,15 +31,28 @@ class PlaySoundsViewController: UIViewController {
         case slow = 0, fast, chipmunk, vader, echo, reverb
     }
     
+    // MARK: - Button content mode
+    
+    func setButtonContentMode(mode:UIViewContentMode) {
+        snailButton.imageView?.contentMode = mode
+        rabbitButton.imageView?.contentMode = mode
+        chipmunkButton.imageView?.contentMode = mode
+        vaderButton.imageView?.contentMode = mode
+        reverbButton.imageView?.contentMode = mode
+        echoButton.imageView?.contentMode = mode
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        setupAudio()
+        setButtonContentMode(mode:UIViewContentMode.scaleAspectFit)
     }
     
     override func viewWillAppear(_ animated: Bool) {
         configureUI(.notPlaying)
     }
 
+    // MARK: - Plays Sound Buttons
     
     @IBAction func playSoundForButton(_ sender: UIButton) {
         print("Type : " , ButtonType(rawValue: sender.tag)!)
@@ -60,6 +73,8 @@ class PlaySoundsViewController: UIViewController {
         
         configureUI(.playing)
     }
+    
+    // MARK: - Stop current audio
     
     @IBAction func stopButtonPressed(_ sender: AnyObject) {
         stopAudio()
